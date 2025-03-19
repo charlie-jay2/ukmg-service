@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -9,13 +10,18 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, "public"))); // Serve HTML
+app.use(express.static(path.join(__dirname, "public"))); // Serve HTML files
 
 // Connect to MongoDB
-mongoose.connect("YOUR_MONGODB_URI", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+const mongoURI = process.env.MONGO_URL;
+if (!mongoURI) {
+    console.error("MONGO_URL is missing in environment variables!");
+    process.exit(1);
+}
+
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("Connected to MongoDB"))
+    .catch(err => console.error("MongoDB Connection Error:", err));
 
 // Patient Schema
 const patientSchema = new mongoose.Schema({
