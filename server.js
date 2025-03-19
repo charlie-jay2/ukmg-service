@@ -12,27 +12,23 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public"))); // Serve HTML files
 
-// Connect to MongoDB
+// MongoDB Connection
 const mongoURI = process.env.MONGO_URL;
-if (!mongoURI) {
-    console.error("MONGO_URL is missing in environment variables!");
-    process.exit(1);
-}
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log("Connected to MongoDB"))
+    .then(() => console.log("Connected to MongoDB (UKMG Database)"))
     .catch(err => console.error("MongoDB Connection Error:", err));
 
-// Patient Schema
+// Define Patient Schema (Explicitly using UKMG database and PatientData collection)
 const patientSchema = new mongoose.Schema({
     userID: Number,
     name: String,
     age: Number,
     medicalHistory: String,
     registeredAt: { type: Date, default: Date.now },
-});
+}, { collection: "PatientData" }); // Ensures collection name
 
-const Patient = mongoose.model("Patient", patientSchema);
+const Patient = mongoose.model("Patient", patientSchema, "PatientData");
 
 // API Routes
 
