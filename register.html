@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - NHS</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f4f4f4;
+      }
+      .container {
+        width: 50%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 50px;
+      }
+      input,
+      select,
+      button {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background: #005eb8;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Register</h1>
+      <input type="text" id="userID" placeholder="Enter User ID" />
+      <input type="text" id="name" placeholder="Full Name" />
+      <input type="date" id="dob" placeholder="Date of Birth" />
+      <select id="role">
+        <option value="Patient">Patient</option>
+        <option value="Doctor">Doctor</option>
+        <option value="Nurse">Nurse</option>
+        <option value="Admin">Admin</option>
+      </select>
+      <button onclick="register()">Register</button>
+      <p id="message"></p>
+    </div>
+    <script>
+      async function register() {
+        const userID = document.getElementById("userID").value;
+        const name = document.getElementById("name").value;
+        const dob = document.getElementById("dob").value;
+        const role = document.getElementById("role").value;
+
+        if (!userID || !name || !dob || !role) {
+          document.getElementById("message").innerText =
+            "Please fill in all fields.";
+          return;
+        }
+
+        const response = await fetch("/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userID, name, dob, role }),
+        });
+
+        const data = await response.json();
+        document.getElementById("message").innerText = data.message;
+
+        if (data.success) {
+          setTimeout(() => (window.location.href = "login.html"), 2000);
+        }
+      }
+    </script>
+  </body>
+</html>

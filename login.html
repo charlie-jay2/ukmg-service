@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - NHS</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f4f4f4;
+      }
+      .container {
+        width: 50%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Login</h1>
+      <input type="text" id="userID" placeholder="Enter User ID" />
+      <button onclick="login()">Login</button>
+      <p id="message"></p>
+    </div>
+    <script>
+      async function login() {
+        const userID = document.getElementById("userID").value;
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userID }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          window.location.href = "medical-history.html";
+        } else {
+          document.getElementById("message").innerText = data.message;
+        }
+      }
+    </script>
+  </body>
+</html>
